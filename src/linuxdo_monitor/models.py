@@ -27,6 +27,7 @@ class Post:
     link: str
     pub_date: datetime
     author: Optional[str] = None
+    category_id: Optional[int] = None
 
 
 @dataclass

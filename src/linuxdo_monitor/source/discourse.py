@@ -548,6 +548,7 @@ class DiscourseSource(BaseSource):
             post_id = str(topic.get("id", ""))
             title = topic.get("title", "")
             slug = topic.get("slug", "")
+            category_id = topic.get("category_id")
 
             # Build link
             link = f"{self.base_url}/t/{slug}/{post_id}"
@@ -577,7 +578,8 @@ class DiscourseSource(BaseSource):
                 title=title,
                 link=link,
                 pub_date=pub_date,
-                author=author
+                author=author,
+                category_id=category_id
             ))
 
         return posts

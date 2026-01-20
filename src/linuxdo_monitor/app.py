@@ -382,13 +382,16 @@ class Application:
 
         async def send_one(chat_id: int, post: Post, keyword: Optional[str]) -> bool:
             try:
+                # Get category name from database
+                category_name = self.db.get_category_name(post.category_id, self.forum_id) if post.category_id else None
+
                 if keyword:
                     success = await self.bot.send_notification(
-                        chat_id, post.title, post.link, keyword
+                        chat_id, post.title, post.link, keyword, category_name=category_name
                     )
                 else:
                     success = await self.bot.send_notification_all(
-                        chat_id, post.title, post.link
+                        chat_id, post.title, post.link, category_name=category_name
                     )
                 if success:
                     # Record notification in DB

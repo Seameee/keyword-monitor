@@ -92,6 +92,15 @@ class Database:
                     applied_at TEXT NOT NULL
                 );
 
+                CREATE TABLE IF NOT EXISTS categories (
+                    id INTEGER NOT NULL,
+                    forum TEXT NOT NULL DEFAULT 'linux-do',
+                    name TEXT NOT NULL,
+                    slug TEXT,
+                    description TEXT,
+                    PRIMARY KEY (id, forum)
+                );
+
                 -- Indexes
                 CREATE INDEX IF NOT EXISTS idx_users_forum ON users(forum);
                 CREATE INDEX IF NOT EXISTS idx_subscriptions_chat_id ON subscriptions(chat_id);
@@ -467,3 +476,20 @@ class Database:
                 "SELECT COUNT(*) FROM blocked_users WHERE forum = ?", (forum,)
             ).fetchone()
         return row[0]
+
+    # Category operations
+    def get_category_name(self, category_id: int, forum: str = DEFAULT_FORUM) -> Optional[str]:
+        """Get category name by category_id"""
+        with self._get_conn() as conn:
+            row = conn.execute(
+                "SELECT name FROM categories WHERE id = ? AND forum = ?", (category_id, forum)
+            ).fetchone()
+        return row["name"] if row else None
+
+    def get_all_categories(self, forum: str = DEFAULT_FORUM) -> dict:
+        """Get all categories for a forum as a dict mapping id -> name"""
+        with self._get_conn() as conn:
+            rows = conn.execute(
+                "SELECT id, name FROM categories WHERE forum = ?", (forum,)
+            ).fetchall()
+        return {row["id"]: row["name"] for row in rows}
