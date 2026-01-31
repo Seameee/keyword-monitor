@@ -221,11 +221,12 @@ class DiscourseSource(BaseSource):
         """
         headers = {
             "User-Agent": self.user_agent,
-            "Cookie": self.cookie,
             "Accept": "application/json, text/javascript, */*; q=0.01",
             "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
             "Referer": f"{self.base_url}/",
         }
+        # Cookie 用 cookies 参数传递，而不是放在 headers 里
+        cookie_dict = self._cookie_to_dict(self.cookie)
 
         last_error = None
         for attempt in range(1, self._direct_retries + 1):
@@ -233,8 +234,9 @@ class DiscourseSource(BaseSource):
                 response = requests.get(
                     url,
                     headers=headers,
+                    cookies=cookie_dict,
                     timeout=self._direct_timeout,
-                    impersonate="chrome131"
+                    impersonate="chrome120"
                 )
                 response.raise_for_status()
                 data = response.json()
