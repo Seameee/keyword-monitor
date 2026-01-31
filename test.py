@@ -6,6 +6,7 @@ import time
 from urllib.parse import urlparse
 
 import requests
+from curl_cffi import requests as curl_requests
 
 FLARESOLVERR_URL = "http://localhost:8191"
 BASE_URL = "https://linux.do"
@@ -315,17 +316,23 @@ def test_drissionpage():
         print(f"   _forum_session: {'存在' if '_forum_session' in refreshed_dict else '缺失'}")
         print(f"   cf_clearance: {'存在' if 'cf_clearance' in refreshed_dict else '缺失'}")
 
-        print("\n5. 测试 DrissionPage Cookie 拉取 latest.json...")
+        print("\n5. 测试 curl_cffi 模拟浏览器指纹拉取 latest.json...")
         ua_for_requests = ua_override
         if ua and "HeadlessChrome" not in ua:
             ua_for_requests = ua
         headers = {
             "User-Agent": ua_for_requests,
-            "Cookie": refreshed,
             "Accept": "application/json, text/javascript, */*; q=0.01",
             "Referer": f"{BASE_URL}/",
         }
-        r = requests.get(f"{BASE_URL}/latest.json?order=created", headers=headers, timeout=30)
+        # 使用 curl_cffi 模拟 Chrome 浏览器指纹
+        r = curl_requests.get(
+            f"{BASE_URL}/latest.json?order=created",
+            headers=headers,
+            cookies=refreshed_dict,
+            impersonate="chrome120",
+            timeout=30
+        )
         if r.status_code == 200:
             data = r.json()
             topics = data.get("topic_list", {}).get("topics", [])
