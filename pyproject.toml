@@ -7,7 +7,7 @@ name = "linux-do-monitor"
 dynamic = ["version"]
 description = "Monitor Linux.do RSS feed and notify users via Telegram bot when keywords match"
 authors = [
-    { name = "hongweizhang" }
+    { name = "Seameee" }
 ]
 license = "MIT"
 readme = "README.md"
@@ -30,8 +30,8 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/hongweizhang/linux-do-monitor"
-Repository = "https://github.com/hongweizhang/linux-do-monitor"
+Homepage = "https://github.com/Seameee/keyword-monitor"
+Repository = "https://github.com/Seameee/keyword-monitor"
 
 [project.scripts]
 linux-do-monitor = "linuxdo_monitor.__main__:main"

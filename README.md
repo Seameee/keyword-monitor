@@ -128,14 +128,74 @@ A: 订阅所有新帖子，不管标题是什么都会推送。消息量较大�
 从源码安装：
 
 ```bash
-git clone https://github.com/zhuxian89/linux-do-keyword-monitor.git
+git clone https://github.com/Seameee/keyword-monitor.git
 cd linux-do-keyword-monitor
 pip install -e .
 ```
 
 ## 部署步骤
 
-### 1. 创建 Telegram Bot
+### 方式一：Docker 部署（推荐）
+
+使用 Docker 可以快速部署，无需配置 Python 环境。
+
+#### 1. 克隆仓库
+
+```bash
+git clone https://github.com/Seameee/keyword-monitor.git
+cd linux-do-keyword-monitor
+```
+
+#### 2. 创建数据目录
+
+```bash
+mkdir -p data
+```
+
+#### 3. 启动服务
+
+```bash
+docker-compose up -d
+```
+
+#### 4. 初始化数据库
+
+```bash
+docker-compose exec linux-do-monitor linux-do-monitor db-init
+```
+
+#### 5. 查看日志
+
+```bash
+docker-compose logs -f
+```
+
+#### 6. 停止服务
+
+```bash
+docker-compose down
+```
+
+#### 自定义配置
+
+编辑 `docker-compose.yml` 可以自定义端口和密码：
+
+```yaml
+services:
+  linux-do-monitor:
+    build: .
+    container_name: linux-do-monitor
+    restart: unless-stopped
+    ports:
+      - "自定义端口:8080"  # 修改左侧端口
+    volumes:
+      - ./data:/app/data
+    command: ["linux-do-monitor", "run", "--web-port", "8080", "--config-dir", "/app/data", "--web-password", "你的密码"]
+```
+
+### 方式二：手动部署
+
+#### 1. 创建 Telegram Bot
 
 1. 在 Telegram 搜索 [@BotFather](https://t.me/BotFather)
 2. 发送 `/newbot` 创建新机器人
@@ -179,6 +239,8 @@ http://localhost:8080/linuxdo/config?pwd=admin
 - **拉取间隔**: 默认 60 秒
 
 ### 5. 后台运行（systemd）
+
+如需使用 systemd 管理服务（非 Docker 部署）：
 
 ```bash
 sudo tee /etc/systemd/system/linux-do-monitor.service << EOF

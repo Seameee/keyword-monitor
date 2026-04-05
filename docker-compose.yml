@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  linux-do-monitor:
+    build: .
+    container_name: linux-do-monitor
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1
+      - CONFIG_DIR=/app/data
+    # 可选：设置 Web 管理密码
+    # command: ["linux-do-monitor", "run", "--web-port", "8080", "--config-dir", "/app/data", "--web-password", "your_secure_password"]
