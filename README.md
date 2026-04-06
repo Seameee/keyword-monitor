@@ -143,7 +143,7 @@ pip install -e .
 
 ```bash
 git clone https://github.com/Seameee/keyword-monitor.git
-cd linux-do-keyword-monitor
+cd keyword-monitor
 ```
 
 #### 2. 创建数据目录
