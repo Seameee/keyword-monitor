@@ -27,27 +27,9 @@ ENV CONFIG_DIR=/app/data
 # 暴露端口
 EXPOSE 8080
 
-# 创建启动脚本
-RUN echo '#!/bin/bash\n\
-CONFIG_FILE="/app/data/config.json"\n\
-DB_FILE="/app/data/data.db"\n\
-\n\
-# 如果配置文件不存在，创建默认空配置\n\
-if [ ! -f "$CONFIG_FILE" ]; then\n\
-    echo "Creating default config..."\n\
-    echo '"'"'"'{"'"'"'forums"'"'"': [], '"'"'admin_chat_id"'"'"': null}'"'"' > "$CONFIG_FILE"\n\
-fi\n\
-\n\
-# 初始化数据库（如果不存在）\n\
-if [ ! -f "$DB_FILE" ]; then\n\
-    echo "Initializing database..."\n\
-    linux-do-monitor db-init\n\
-fi\n\
-\n\
-# 启动服务\n\
-echo "Starting service..."\n\
-linux-do-monitor run --web-port 8080 --config-dir /app/data\n\
-' > /app/entrypoint.sh && chmod +x /app/entrypoint.sh
+# 复制启动脚本
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
 # 启动命令
 CMD ["/app/entrypoint.sh"]
